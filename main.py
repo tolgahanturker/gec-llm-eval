@@ -2,6 +2,7 @@ import yaml
 import globals
 import argparse
 from data_loader import DataLoader
+from api_caller import APICaller
 
 def load_config(path):
     # reading configuration parameters in config.yaml and storing it in global parameter CONFIG
@@ -12,9 +13,9 @@ def parse_arguments():
     # parsing arguments provided from run command
     parser = argparse.ArgumentParser(description = "gec-llm-eval")
     parser.add_argument("path", help = "path to the M2 data file")
-    parser.add_argument("model", help = "name of the LLM to use (...)")
-    parser.add_argument("-em", "--experimentMode", type = int, help = "experiment mode (...)", default = 0)
-    parser.add_argument("-pid", "--promptId", type = int, help = "prompt id (...)", default = 0)
+    parser.add_argument("model", help = "name of the LLM to use (options: gpt-4o)")
+    parser.add_argument("experimentMode", help = "experiment mode (options: zero-shot or few-shot)")
+    parser.add_argument("-pid", "--promptId", type = int, help = "prompt id (...)", default = 1)
     args = parser.parse_args()
 
     # loading global config parameters related to arguments
@@ -51,7 +52,9 @@ def main():
     # loading input data
     data = load_data()
 
-    print("finish")
+    # llm API calls
+    result = APICaller.run(data)
+    
 
 
 # python3 main.py 'data/bea2019/test/ABCN.test.bea19.orig' gpt-4o
