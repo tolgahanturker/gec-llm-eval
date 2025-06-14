@@ -1,3 +1,10 @@
 # general settings
 GENERAL:
   DEBUG: True
+
+# openai api settings
+OPENAI_API:
+  OPENAI_API_KEY: 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
+  TEMPERATURE: 0.0
+  MAX_TOKENS: 500
+  DELAY_PER_REQUEST: 0.2 # this guarantees that we do not exceed the rate limit of 500 RPM (5 x 60 = 300 RPM)
