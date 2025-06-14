@@ -1,0 +1,20 @@
+# ignore virtual environment
+.venv
+
+# ignore Visual Studio Code settings
+#.vscode
+
+# ignore environment variables file
+#.env
+
+# ignore data folder
+#data
+
+# ignore Python cache files
+__pycache__
+
+# ignore results folder
+#results
+
+data/.DS_Store
+.DS_Store
