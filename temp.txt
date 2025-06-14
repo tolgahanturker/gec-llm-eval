@@ -1,0 +1,211 @@
+# system prompt: Do not rephrase or rewrite the entire sentence unless necessary. Preserve the original structure and vocabulary as much as possible.
+# user prompt: Correct the following sentence using minimum number of edits
+
+
+
+#counter_edit, data = DataLoader.load_m2_data_file(path = args.path)
+#counter_edit, data = DataLoader.load_m2_data_file(path = 'results\hypothesis_gpt-4o_A.dev.gold.bea19_20250613_152059.m2')
+#data = DataLoader.load_data_file(path = args.path)
+
+
+@dataclass
+class M2EditAnnotation:
+    """ Represents edit annotation in M2 format. """
+    start: int
+    end: int
+    error_type: str
+    correction: str
+    annotator_id: Optional[int]
+
+@dataclass
+class M2Format:
+    """ Represents M2 format data instance. """
+    sent_id: int
+    original_sentence: str
+    gold_sentence: str
+    original_sentence_tokenized: List[str] = field(default_factory=list)
+    gold_sentence_tokenized: List[str] = field(default_factory=list)
+    edits: List[M2EditAnnotation] = field(default_factory=list)
+
+
+@staticmethod
+def load_m2_data_file(path):
+    """ Load M2 data from a file. """
+    sent_id = 0 # sentence id
+    current_original_sentence = "" # in-loop variable for original sentence
+    current_original_sentence_tokenized = [] # in-loop variable for tokenized form of original sentence
+    gold_sentence = "" # in-loop variable for gold sentence (will be constructed from original sentence and edits)
+    gold_sentence_tokenized = [] # in-loop variable for tokenized form of gold sentence
+    current_edits = [] # in-loop variable for edits of the current sentence
+    m2_data = [] # return value, list of M2Format objects
+
+    counter_edit = 0
+
+    with Path(path).open(encoding="utf-8") as f:
+        # reading each line of the M2 file
+        for line in f:
+            # removing leading and trailing whitespace
+            line = line.strip()
+            # detecting original sentence
+            if line.startswith("S "):
+                sent_id += 1
+                # removing "S " prefix
+                current_original_sentence = line[2:]
+                # tokenizing original sentence by whitespace
+                current_original_sentence_tokenized = current_original_sentence.split() 
+            # detecting edit annotations
+            elif line.startswith("A "):
+                # splitting 6-part edit annotation (start-end|||error_type|||correction|||xxx|||xxx|||annotator_id)
+                parts = line[2:].split("|||")
+                # if any edit is present (not a "noop")
+                if parts[1].strip() != "noop":
+                    # filling the M2EditAnnotation dataclass
+                    start = int(parts[0].split()[0])
+                    end = int(parts[0].split()[1])
+                    error_type = parts[1].strip()
+                    correction = parts[2].strip()
+                    annotator_id = int(parts[5].strip())
+                    # appending the edit to the current edits list
+                    current_edits.append(M2EditAnnotation(start = start, 
+                                                        end = end, 
+                                                        error_type = error_type, 
+                                                        correction = correction, 
+                                                        annotator_id = annotator_id))
+                    counter_edit += 1
+            # data boundary
+            elif line == "":
+                # constructing gold sentence from original sentence and edits
+                gold_sentence_tokenized, gold_sentence = apply_edits(current_original_sentence_tokenized, current_edits)
+                # appending the M2Format dataclass to the list
+                m2_data.append(M2Format(sent_id = sent_id,
+                                        original_sentence = current_original_sentence,
+                                        gold_sentence = gold_sentence,
+                                        original_sentence_tokenized = current_original_sentence_tokenized,
+                                        gold_sentence_tokenized = gold_sentence_tokenized,
+                                        edits = current_edits
+                ))
+                # empty in-loop variables for the next step
+                current_original_sentence = ""
+                current_original_sentence_tokenized = []
+                gold_sentence = ""
+                gold_sentence_tokenized = []
+                current_edits = []
+    return counter_edit, m2_data
+
+def apply_edits(tokens, edits):
+    """
+    Apply edits to the original_sentence_tokenized to produce the corrected sentence.
+    Edits are applied sequentially from left to right.
+    """
+    new_tokens = tokens[:]
+    offset = 0  # to track index shift after edits
+
+    for edit in edits:
+        start = edit.start + offset
+        end = edit.end + offset
+        replacement_tokens = edit.correction.split() if edit.correction else []
+
+        # replacing the span with correction
+        new_tokens[start:end] = replacement_tokens
+
+        # updating offset to account for token list length change
+        offset += len(replacement_tokens) - (edit.end - edit.start)
+
+    return new_tokens, " ".join(new_tokens)
+
+
+
+
+# LLM API CALLS
+    ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
+    results = [] # hypothesis results
+
+    if args.model == "gpt-4o": # model snapshot: chatgpt-4o-latest
+        # currently (June 2025) request limit for gpt-4o model is 500 RPM
+        request_delay = config["OPENAI_API"]["DELAY_PER_REQUEST"]
+
+        # Make sure to set your OpenAI API Key in the environment variable OPENAI_API_KEY or uncomment and use the line below to set it directly.
+        #client = OpenAI(api_key = <YOUR OPENAI_API_KEY>,)
+        client = OpenAI(api_key = config["OPENAI_API"]["OPENAI_API_KEY"])
+        delimiter = "###"
+        for idx, item in enumerate(data):
+            print(f'{item.sent_id}. sentence is processing..')
+
+            messages =  [
+                #{'role':'system', 'content':config["PROMPTS"]["SYSTEM_MESSAGE"]},
+                #{'role':'system', 'content': f'You are a helpful language teaching AI assistant for second language learners. Your task is to correct mistakes in the sentences written by learners with minumum number of edits. The user input message will be delimited with {delimiter} characters. Return only the corrected sentence. If no correction is made return the user input.'},
+                #{'role':'system', 'content': f'You are a helpful language teaching AI assistant for second language learners. Your task is to correct mistakes in the sentences written by learners. The user input message will be delimited with {delimiter} characters. Return only the corrected sentence. If no correction is made return the user input.'},
+                {'role':'system', 'content': f'You are an English grammatical error correction tool that can identify and correct any grammatical errors in a text.'},
+                {'role':'user', 'content':f'Please identify and correct any grammatical errors in the following sentence indicated by <input> ERROR </input> tag, you need to comprehend the sentence as a whole before identifying and correcting any errors step by step while keeping the original sentence structure unchanged as much as possible. Afterward, output the corrected version directly without any explanations. Please start: <input> {item.original_sentence} </input>'}
+            ]
+
+            response = client.chat.completions.create(
+                model = args.model,
+                messages = messages,
+                temperature = config["OPENAI_API"]["TEMPERATURE"],
+                max_tokens = config["OPENAI_API"]["MAX_TOKENS"],
+                seed = item.sent_id
+            )
+
+            output = response.choices[0].message.content
+            results.append({"sentence_id": item.sent_id, "fingerprint": response.system_fingerprint, "original_sentence": item.original_sentence, "output": output})
+            #results.append({"sentence_id": item.sent_id, "original_sentence": item.original_sentence, "output": output})
+            
+            time.sleep(request_delay)
+    else:
+        raise ValueError(f"Model {args.model} is not supported. Please use 'gpt-4o' or 'deepseek-2'...")
+    ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
+
+    
+    # EVALUATION PREPROCESSING
+    ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####
+    nlp = spacy.load('en_core_web_sm') # for ERRANT compatible tokenization of hypothesis result
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    directory = "results"
+    os.makedirs(directory, exist_ok = True) # create the directory if it doesn't exist
+    path_result_with_seed = os.path.join(directory, f"result_with_seed_{args.model}_{Path(args.path).stem}_{timestamp}.txt")
+    path_hypothesis = os.path.join(directory, f"hypothesis_{args.model}_{Path(args.path).stem}_{timestamp}.m2")
+
+    # write results to a file for reproducibility
+    with open(path_result_with_seed, "w", encoding="utf-8") as file:
+        for item in results:
+            file.write(str(item) + "\n")
+
+    annotator = errant.load('en', nlp)
+    with open(path_hypothesis, "w", encoding="utf-8") as file:
+        for item in results:
+            orig = annotator.parse(item["original_sentence"])
+            file.write("S " + orig.text + "\n")
+            cor = annotator.parse(item["output"], tokenise = True)
+            edits = annotator.annotate(orig, cor)
+            for edit in edits:
+                edit_output = edit.to_m2(id=0)
+                file.write(edit_output + "\n")
+            file.write("\n")
+    
+    #result = subprocess.run(f"errant_compare.exe -hyp {path_hypothesis} -ref {args.path}", shell = True)
+    ##### ##### ##### ##### ##### ##### ##### ##### ##### ##### #####    
+
+    #with open(eval_prep_file_path_hypothesis, "w", encoding="utf-8") as file:
+        #for item in results:
+            # Tokenize the output using spaCy to ensure compatibility with ERRANT
+            #doc = nlp(item["output"])
+            #tokens = [token.text for token in doc]
+            #output = " ".join(tokens)
+            #file.write(output + "\n")
+
+
+
+import os
+from pathlib import Path
+from datetime import datetime
+import spacy
+import time
+import errant
+import subprocess
+
+
+OPENAI_API_KEY = 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
+GROK_API_KEY = xai-jAJ8KRmA16IbstWRjWhIq9K6mInixNESycz2l2wPdA5ZR6GFaxGBKpU6Qf1k9F89sYikZneR0WnHIYVH
+GEMINI_API_KEY = AIzaSyAuyMXC8VxGhgAciQgY9m0lQEnt_XSYMAo
+DEEPSEEK_API_KEY = sk-bcb2c689f3ae463e96b10c7ea70ced47
