@@ -105,5 +105,6 @@ def main():
     print("finish")
 
 # python3 main.py 'data/bea2019/test/ABCN.test.bea19.orig' gpt-4o
+# python.exe .\main.py 'data\jfleg\test\test.src' "gpt-4o" "zero-shot" 2
 if __name__ == "__main__":
     main()
