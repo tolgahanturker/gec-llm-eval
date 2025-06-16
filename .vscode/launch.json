@@ -7,7 +7,8 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["data/bea2019/test/ABCN.test.bea19.orig", "gpt-4o"]
+            //"args": ["data/bea2019/test/ABCN.test.bea19_test.orig", "gpt-4o", "zero-shot"]
+            "args": ["data/conll2014/alt/official-2014.combined-withalt_test.m2", "gpt-4o", "zero-shot"]
         }
     ]
 }
