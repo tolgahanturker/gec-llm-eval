@@ -1,17 +1,18 @@
 import globals
 from openai import OpenAI
+import time
 
 class APICaller:
 
     @staticmethod
     def read_instruction():
         # obtaining instruction file path from argument parameters
-        path = "prompts/" + globals.EXPERIMENT_MODE + "/" + globals.PROMPT_ID + ".txt"
+        path = "instructions/" + globals.EXPERIMENT_MODE + "/" + str(globals.PROMPT_ID) + ".txt"
 
         try:
             # reading instruction file
-            with open(path, "r", encoding="utf-8") as f:
-                instruction = f.read().strip()
+            with open(path, "r", encoding="utf-8") as file:
+                instruction = file.read().strip()
 
             if not instruction:
                 raise ValueError("Instruction file is empty. Please check the file content.")
@@ -27,8 +28,8 @@ class APICaller:
 
     @staticmethod
     def run(data):
-        # reading corresponding prompt
-        instruction = APICaller.read_instruction()
+        # empty list to store api call results
+        result = []
 
         """
         June 2025
@@ -45,17 +46,26 @@ class APICaller:
             # make sure to set your OPENAI_API_KEY in config.yaml file
             client = OpenAI(api_key = globals.CONFIG["OPENAI_API"]["OPENAI_API_KEY"])
 
-            for idx, item in enumerate(data):
-                print(f'Processing sentence {item.sent_id}/{len(data)}')
+            for item in data:
+                print(f'Processing sentence {item["sentence_id"]}/{len(data)}')
                 
-                """
                 response = client.responses.create(
-                    model = "gpt-4.1",
-                    instructions = instruction
-                    input = "How would I declare a variable for a last name?",
+                    model = globals.MODEL,
+                    temperature = globals.CONFIG["OPENAI_API"]["TEMPERATURE"],
+                    max_output_tokens = globals.CONFIG["OPENAI_API"]["MAX_TOKENS"],
+                    instructions = APICaller.read_instruction(),
+                    input = "<input>" + item["test_sentence"] + "</input>"
                 )
-                """
+                
+                result.append(dict(
+                    sentence_id=item["sentence_id"],
+                    test_sentence=item["test_sentence"],
+                    corrected_sentence=response.output_text,
+                    response=response.output
+                ))
 
-
+                time.sleep(request_delay)
+            
+            return result
         else:
             raise ValueError(f"Model {globals.MODEL} is not supported.")
