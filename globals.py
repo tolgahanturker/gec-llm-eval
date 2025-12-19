@@ -1,5 +1,7 @@
 CONFIG = {}
-INPUT_FILE_PATH = ""
 MODEL = ""
-EXPERIMENT_MODE = ""
-PROMPT_ID = 0
+DATA_PATH = ""
+PROMPT_PATH = ""
+
+# for evaluation
+EVAL_METRIC = ""

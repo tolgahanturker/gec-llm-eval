@@ -2,19 +2,13 @@
 .venv
 
 # ignore Visual Studio Code settings
-#.vscode
-
-# ignore environment variables file
-#.env
-
-# ignore data folder
-#data
+.vscode
 
 # ignore Python cache files
 __pycache__
 
-# ignore results folder
-#results
+# ignore data folder
+data
 
-data/.DS_Store
-.DS_Store
+# ignore results folder
+results
