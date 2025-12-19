@@ -61,12 +61,5 @@ def main():
     # writing results for evaluation
     Reporter.write_results_for_eval(result, llm_output_path)
 
-<<<<<<< HEAD
-
-# run script: python main.py gpt-5.1-2025-11-13 "data/test/deneme" "instructions/zero-shot_neutral.txt"
-=======
-# python3 main.py 'data/bea2019/test/ABCN.test.bea19.orig' gpt-4o
-# python.exe .\main.py 'data\jfleg\test\test.src' "gpt-4o" "zero-shot" 2
->>>>>>> 66e96e2705675ab848f28ca87d030528cd94e218
 if __name__ == "__main__":
     main()
