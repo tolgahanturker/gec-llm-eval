@@ -40,9 +40,9 @@ def parse_arguments():
     # showing input settings
     if globals.CONFIG["GENERAL"]["DEBUG"]:
         print("############################################")
-        print(f"Model\t\t\t: {globals.MODEL}")
-        print(f"Data Path\t\t: {globals.DATA_PATH}")
-        print(f"Prompt Path\t\t: {globals.PROMPT_PATH}")
+        print(f"Model\t\t: {globals.MODEL}")
+        print(f"Data Path\t: {globals.DATA_PATH}")
+        print(f"Prompt Path\t: {globals.PROMPT_PATH}")
         print("############################################")
 
 def main():
