@@ -61,5 +61,6 @@ def main():
     # writing results for evaluation
     Reporter.write_results_for_eval(result, llm_output_path)
 
+# python main.py gpt-5.1-2025-11-13 "data/test/conll2014/official-2014.combined-withalt.m2" "instructions/zero-shot_neutral.txt"
 if __name__ == "__main__":
     main()
