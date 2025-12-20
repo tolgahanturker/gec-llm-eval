@@ -46,6 +46,8 @@ def parse_arguments():
 
 def evaluate():
     # only used for CoNLL2014 dataset
+    # https://www.comp.nus.edu.sg/~nlp/conll14st.html
+    # returns F0.5 score
     if globals.METRIC == "m2scorer":
         command = [
             globals.CONFIG["EVALUATION"]["PYTHON2_FULL_PATH_FOR_M2SCORER"],
@@ -53,11 +55,37 @@ def evaluate():
             globals.SYSTEM_OUTPUT_PATH,
             globals.GOLD_DATA_PATH
         ]
+    elif globals.METRIC == "gleu":
+        # from GLEU repo (https://github.com/keisks/jfleg) README:
+        # python ./eval/gleu.py -r ./dev/dev.ref[0-3] -s ./dev/dev.src --hyp YOUR_SYSTEM_OUTPUT
+        # This returns the mean, standard deviation, and confidence interval.
+        mode = os.path.basename(globals.GOLD_DATA_PATH) # controls if it is dev or test
+        command = [
+            "python",
+            globals.CONFIG["EVALUATION"]["GLEU_PATH"],
+            "-r",
+            globals.GOLD_DATA_PATH + "/" + mode + ".ref0",
+            globals.GOLD_DATA_PATH + "/" + mode + ".ref1",
+            globals.GOLD_DATA_PATH + "/" + mode + ".ref2",
+            globals.GOLD_DATA_PATH + "/" + mode + ".ref3",
+            "-s",
+            globals.GOLD_DATA_PATH + "/" + mode + ".src",
+            "--hyp",
+            globals.SYSTEM_OUTPUT_PATH
+        ]
+    elif globals.METRIC == "errant":
+        command = [
+            "errant_compare",
+            "-hyp",
+            globals.GOLD_DATA_PATH,
+            "-ref",
+            globals.SYSTEM_OUTPUT_PATH
+        ]
 
-        try:
-            subprocess.run(command, check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"An error occurred. Error code: {e.returncode}")
+    try:
+        subprocess.run(command, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred. Error code: {e.returncode}")
 
 def main():
     # loading yaml for configuration parameters
@@ -69,6 +97,9 @@ def main():
     # performing evaluation
     evaluate()
 
+# python eval.py <metric> <system_output> <gold_data>
 # python eval.py m2scorer "results/gpt-5.1-2025-11-13_official-2014.combined-withalt.m2_zero-shot_neutral.txt_202512200016.txt" "data/test/conll2014/official-2014.combined-withalt.m2"
+# python eval.py gleu "results/gpt-5.1-2025-11-13_test.src_zero-shot_neutral.txt_202512202227.txt" "./data/test/jfleg/test"
+# python eval.py errant "results/gpt-5.1-2025-11-13_ABCN.dev.gold.bea19.m2_zero-shot_neutral.txt_202512210123.m2" "./data/test/wandilocness/ABCN.dev.gold.bea19.m2"
 if __name__ == "__main__":
     main()

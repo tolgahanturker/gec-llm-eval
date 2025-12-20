@@ -8,6 +8,7 @@ EVALUATION:
   ALLOWED_METRICS: ["m2scorer", "errant", "gleu"]
   PYTHON2_FULL_PATH_FOR_M2SCORER: "/Users/tolgahanturker/.pyenv/versions/2.7.18/bin/python" # for m2scorer which requires python < 3.7 TODO: remove content before committing
   M2SCORER_PATH: "./data/conll2014/m2scorer/scripts/m2scorer.py"
+  GLEU_PATH: "./data/jfleg/eval/gleu.py"
 
 # openai api settings
 OPENAI_API:
