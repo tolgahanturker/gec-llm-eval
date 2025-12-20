@@ -69,12 +69,6 @@ def main():
     # performing evaluation
     evaluate()
 
-# run script: python eval.py m2scorer "results/gpt-5.1-2025-11-13_official-2014.combined-withalt.m2_zero-shot_neutral.txt_202512200016.txt" "data/test/conll2014/official-2014.combined-withalt.m2"
+# python eval.py m2scorer "results/gpt-5.1-2025-11-13_official-2014.combined-withalt.m2_zero-shot_neutral.txt_202512200016.txt" "data/test/conll2014/official-2014.combined-withalt.m2"
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
