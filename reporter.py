@@ -53,7 +53,12 @@ class Reporter:
                 
                 # NLTK word tokenization for compatibility with CoNLL-2014 shared task results
                 tokens = word_tokenize(json_line['corrected_sentence'], language='english')
-                tokenized_sentence = " ".join(tokens)
+                # Penn Treebank tırnaklarını düz tırnağa geri çevir
+                clean_tokens = [
+                    '"' if t in ("``", "''") else t 
+                    for t in tokens
+                ]
+                tokenized_sentence = " ".join(clean_tokens)
                 
                 # the file used for evaluation with m2scorer
                 outfile.write(tokenized_sentence + '\n')
