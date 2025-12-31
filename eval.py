@@ -39,7 +39,7 @@ def parse_arguments():
     # showing input settings
     if globals.CONFIG["GENERAL"]["DEBUG"]:
         print("############################################")
-        print(f"Model\t\t\t: {globals.METRIC}")
+        print(f"Metric\t\t\t: {globals.METRIC}")
         print(f"System Output Path\t: {globals.SYSTEM_OUTPUT_PATH}")
         print(f"Gold Data Path\t\t: {globals.GOLD_DATA_PATH}")
         print("############################################")
