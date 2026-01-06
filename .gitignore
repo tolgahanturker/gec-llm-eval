@@ -1,16 +1,23 @@
+# ignore macOS system files
+.DS_Store
+
+# ignore Python cache files
+__pycache__
+
 # ignore virtual environment
 .venv
 
 # ignore Visual Studio Code settings
 .vscode
 
-# ignore Python cache files
-__pycache__
+# ignore old instructions
+instructions/old
 
-# ignore data folder
-data
+# ignore my personal notes
+.my_notes.txt
 
-# ignore results folder
-results
+# ignore misc.py
+misc.py
 
-.Notes
+# ignore sampling.py file
+sampling.py
