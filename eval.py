@@ -23,7 +23,7 @@ def validate_arguments(args):
 def parse_arguments():
     # parsing positional arguments
     parser = argparse.ArgumentParser(description = "Benchmarking LLMs for Grammar Error Correction (Evaluation)")
-    parser.add_argument("metric", help = "name of the metric (options: m2scorer, errant, gleu)") # TODO: options to be updated based on CONFIG
+    parser.add_argument("metric", help = "name of the metric (options: m2scorer, errant, gleu)")
     parser.add_argument("system_output_path", help = "path to the system output file")
     parser.add_argument("gold_data_path", help = "path to gold data file")
     args = parser.parse_args()
@@ -52,6 +52,7 @@ def evaluate():
         command = [
             globals.CONFIG["EVALUATION"]["PYTHON2_FULL_PATH_FOR_M2SCORER"],
             globals.CONFIG["EVALUATION"]["M2SCORER_PATH"],
+            #"--verbose",
             globals.SYSTEM_OUTPUT_PATH,
             globals.GOLD_DATA_PATH
         ]
