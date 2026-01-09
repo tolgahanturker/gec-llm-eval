@@ -5,6 +5,7 @@ People get certain diseases because of genetic changes .
 How much a genetic change tells us about your chance of developing a disorder is not always clear .
 If your genetic results indicate that you have gene changes associated with an increased risk of heart disease , it does not mean that you will definitely develop heart disease .
 The opposite is also true .
+If your genetic results show that you do not have changes associated with an increased risk of heart disease , it is still possible that you will develop heart disease .
 However , for some rare diseases , people who have certain gene changes are guaranteed to develop the disease .
 When we are diagnosed with a certain genetic disease , are we supposed to disclose this result to our relatives ?
 My answer is no .
