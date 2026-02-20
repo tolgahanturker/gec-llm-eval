@@ -21,3 +21,10 @@ misc.py
 
 # ignore sampling.py file
 sampling.py
+
+# ignore visualization.py file
+visualization.py
+
+config._for_localuse.yaml
+
+figures/
