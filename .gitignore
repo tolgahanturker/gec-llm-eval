@@ -30,3 +30,5 @@ figures/
 config_forlocaluse.yaml
 
 data/
+
+test.py
