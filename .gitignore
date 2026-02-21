@@ -28,3 +28,5 @@ visualization.py
 figures/
 
 config_forlocaluse.yaml
+
+data/
