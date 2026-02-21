@@ -25,6 +25,6 @@ sampling.py
 # ignore visualization.py file
 visualization.py
 
-config_for_localuse.yaml
-
 figures/
+
+config_forlocaluse.yaml
