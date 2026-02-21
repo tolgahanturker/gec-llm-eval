@@ -1,0 +1,39 @@
+# general settings
+GENERAL:
+  DEBUG: True
+  ALLOWED_LLMS: ["gpt-3.5-turbo", "gpt-4.1-2025-04-14", "gpt-5-mini-2025-08-07", "claude-sonnet-4-5", "gemini-2.5-pro", "Mistral-Large-3", "Llama-3.3-70B-Instruct", "Llama-4-Scout-17B-16E-Instruct"]
+
+# evaluation settings
+EVALUATION:
+  ALLOWED_METRICS: ["m2scorer", "errant", "gleu"]
+  PYTHON2_FULL_PATH_FOR_M2SCORER: "/Users/tolgahanturker/.pyenv/versions/2.7.18/bin/python" # for m2scorer which requires python < 3.7
+  M2SCORER_PATH: "./data/conll2014/m2scorer/scripts/m2scorer.py"
+  GLEU_PATH: "./data/jfleg/eval/gleu.py"
+
+# settings for the LLM APIs
+OPENAI_API:
+  KEY: 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
+  TEMP: 0.0
+  DELAY_PER_REQUEST: 0.2 # this guarantees that we do not exceed the rate limit of 500 RPM (5 x 60 = 300 RPM)
+
+GEMINI_API:
+  KEY: AIzaSyBurLr4putNP0207hoSzM3pj9kmCC29Xl4
+  TEMP: 0.0
+  DELAY_PER_REQUEST: 0.5
+  DELAY_PER_REQUEST_FOR_PRO: 0.5 # this guarantees that we do not exceed the rate limit of 60-120 RPM (2 x 60 = 120 RPM)
+  MAX_TOKENS: 2048
+
+CLAUDE_API:
+  KEY: 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
+  TEMP: 0.0
+  DELAY_PER_REQUEST: 2 # this guarantees that we do not exceed the rate limit of 50 RPM
+  MAX_TOKENS: 2048 # expects the max tokens explicitly
+
+AZURE_API:
+  KEY: 1cMhK160HLSOOffd5cgu4FoLwnrtB5KnvL89eOmTeRUTsO9RA2d6JQQJ99BLACHYHv6XJ3w3AAAAACOGAbmn
+  TEMP: 0.0
+  DELAY_PER_REQUEST: 10 # this (3) guarantees that we do not exceed the rate limit of 20 RPM
+  MAX_TOKENS: 2048
+  ENDPOINT: https://turke-mjhnqyu6-eastus2.services.ai.azure.com/models
+  API_VERSION: 2024-05-01-preview
+  
