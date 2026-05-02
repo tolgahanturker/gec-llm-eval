@@ -5,7 +5,7 @@ This repository contains the official implementation and evaluation framework fo
 
 If you use this framework or our findings in your research, please cite our paper:
 
-> Türker, T., Eryiğit, G. (2026). *Instruction-Conditioned LLMs for Grammatical Error Correction: Analyzing Neutral-Anchored Instructional Sensitivity Across Editing Modes*. [Conference Name TBD].
+> Türker, T., Eryiğit, G. (2026). *Instruction-Following LLMs for Grammatical Error Correction: Analyzing Neutral-Anchored Instructional Sensitivity Across Editing Modes*. [Conference Name TBD].
 
 
 ## Usage
@@ -53,3 +53,9 @@ python eval.py m2scorer "results/gpt-5.1-2025-11-13_official-2014.combined-witha
 # python eval.py gleu "results/gpt-5.1-2025-11-13_test.src_zero-shot_neutral.txt_202512202227.txt" "./data/test/jfleg/test"
 # python eval.py errant "results/gpt-5.1-2025-11-13_ABCN.dev.gold.bea19.m2_zero-shot_neutral.txt_202512210123.m2" "./data/test/wandilocness/ABCN.dev.gold.bea19.m2"
 ```
+
+## Contact
+
+For questions or feedback, feel free to reach out:
+
+**Tolgahan Türker** — turkert21@itu.edu.tr
